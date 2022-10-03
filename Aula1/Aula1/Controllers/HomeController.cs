@@ -1,21 +1,23 @@
-﻿using Aula1.Models;
+﻿using Aula1.Data;
+using Aula1.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace Aula1.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+                private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return View(await _context.Cursos.Where(c => c.Disponivel == true).ToListAsync());
         }
 
         public IActionResult Privacy()
@@ -24,11 +26,6 @@ namespace Aula1.Controllers
         }
 
         public IActionResult QuemSomos()
-        {
-            return View();
-        }
-
-        public IActionResult Cursos()
         {
             return View();
         }
