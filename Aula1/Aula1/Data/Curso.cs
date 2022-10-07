@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Routing.Constraints;
+﻿using Aula1.Models;
+using Microsoft.AspNetCore.Routing.Constraints;
 
 namespace Aula1.Data
 {
@@ -13,6 +14,8 @@ namespace Aula1.Data
         public string Requisitos { get; set; }
         public int IdadeMinima { get; set; }
         public decimal Preco { get; set; }
+        public bool EmDestaque { get; set; }
+        public CategoriaCarta categoriaCarta { get; set; }
 
     }
 }

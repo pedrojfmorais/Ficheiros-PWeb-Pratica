@@ -17,7 +17,7 @@ namespace Aula1.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Cursos.Where(c => c.Disponivel == true).ToListAsync());
+            return View(await _context.Cursos.Where(c => c.Disponivel == true && c.EmDestaque == true).ToListAsync());
         }
 
         public IActionResult Privacy()
