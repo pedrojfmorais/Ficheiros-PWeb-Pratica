@@ -8,6 +8,5 @@ namespace Aula1.Models
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public bool Disponivel { get; set; }
-        public Curso[] listaCursos { get; set; }
     }
 }

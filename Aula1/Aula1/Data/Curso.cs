@@ -15,7 +15,7 @@ namespace Aula1.Data
         public int IdadeMinima { get; set; }
         public decimal Preco { get; set; }
         public bool EmDestaque { get; set; }
-        public CategoriaCarta categoriaCarta { get; set; }
+
 
     }
 }
