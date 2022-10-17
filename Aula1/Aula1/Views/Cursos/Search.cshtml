@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Curso>
+﻿@model PesquisaCursoViewModel
 
 @{
     Layout = "~/Views/Shared/_Layout2.cshtml";
@@ -8,7 +8,7 @@
     @ViewData["Title"]
 </h1>
 
-<form method="post" action="Cursos/Search">
+<form method="post">
     <label for="TextoAPesquisar">Pesquisa de cursos:</label>
     <input type="text" id="TextoAPesquisar" name="TextoAPesquisar" 
         placeholder="texto a procurar" />
@@ -25,16 +25,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nome)
+                @Html.DisplayNameFor(model => model.ListaDeCursos.FirstOrDefault().Nome)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Disponivel)
+                @Html.DisplayNameFor(model => model.ListaDeCursos.FirstOrDefault().Disponivel)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.ListaDeCursos) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Nome)

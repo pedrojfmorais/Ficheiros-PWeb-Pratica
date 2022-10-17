@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Aula1.Data;
+using Aula1.Models;
 
 namespace Aula1.Controllers
 {
@@ -33,7 +34,16 @@ namespace Aula1.Controllers
             ViewData["Title"] = "Lista de cursos";
             return View(await _context.Cursos.ToListAsync());
         }
-
+        /*
+        [HttpPost]
+        public async Task<IActionResult> Index(string textoAPesquisar )
+        {
+            return View(await _context.Cursos.Where(
+                c=>c.Nome.Contains(textoAPesquisar) 
+                || c.Descricao.Contains(textoAPesquisar)
+                ).ToListAsync());
+        }
+        */
         // GET: Cursos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -56,6 +66,21 @@ namespace Aula1.Controllers
         public IActionResult Create()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Search([Bind("TextoAPesquisar")]
+            PesquisaCursoViewModel pesquisaCurso)
+        {
+
+            pesquisaCurso.ListaDeCursos = await _context.Cursos.Where(
+                c => c.Nome.Contains(pesquisaCurso.TextoAPesquisar)
+                || c.Descricao.Contains(pesquisaCurso.TextoAPesquisar)
+                ).ToListAsync();
+
+            pesquisaCurso.NumResultados = pesquisaCurso.ListaDeCursos.Count;
+
+            return View(pesquisaCurso);
         }
 
         // POST: Cursos/Create

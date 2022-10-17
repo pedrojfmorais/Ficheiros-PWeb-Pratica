@@ -1,12 +1,11 @@
-﻿using Aula1.Data;
-
-namespace Aula1.Models
+﻿namespace Aula1.Models
 {
-    public class CategoriaCarta
+    public class Categoria
     {
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public bool Disponivel { get; set; }
+        public ICollection<Curso> Cursos { get; set; }
     }
 }
