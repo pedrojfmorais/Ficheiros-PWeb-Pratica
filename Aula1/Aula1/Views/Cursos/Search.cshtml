@@ -9,9 +9,8 @@
 </h1>
 
 <form method="post">
-    <label for="TextoAPesquisar">Pesquisa de cursos:</label>
-    <input type="text" id="TextoAPesquisar" name="TextoAPesquisar" 
-        placeholder="texto a procurar" />
+    <label asp-for="TextoAPesquisar"></label>
+    <input asp-for="TextoAPesquisar" />
     <button type="submit">pesquisar</button>
 </form>
 
@@ -30,6 +29,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.ListaDeCursos.FirstOrDefault().Disponivel)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ListaDeCursos.FirstOrDefault().Categoria.Nome)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -41,6 +43,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Disponivel)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Categoria.Nome)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |

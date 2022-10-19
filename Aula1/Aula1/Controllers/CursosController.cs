@@ -65,6 +65,7 @@ namespace Aula1.Controllers
         // GET: Cursos/Create
         public IActionResult Create()
         {
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
             return View();
         }
 
@@ -88,8 +89,9 @@ namespace Aula1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Disponivel,Categoria,Descricao,DescricaoResumida,Requisitos,IdadeMinima,Preco,EmDestaque")] Curso curso)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Disponivel,CategoriaId,Descricao,DescricaoResumida,Requisitos,IdadeMinima,Preco,EmDestaque")] Curso curso)
         {
+            curso.Categoria = _context.Categoria.Find(curso.CategoriaId);
             if (ModelState.IsValid)
             {
                 _context.Add(curso);
@@ -102,6 +104,8 @@ namespace Aula1.Controllers
         // GET: Cursos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
+
             if (id == null || _context.Cursos == null)
             {
                 return NotFound();
@@ -120,7 +124,7 @@ namespace Aula1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Disponivel,Categoria,Descricao,DescricaoResumida,Requisitos,IdadeMinima,Preco,EmDestaque")] Curso curso)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Disponivel,CategoriaId,Descricao,DescricaoResumida,Requisitos,IdadeMinima,Preco,EmDestaque")] Curso curso)
         {
             if (id != curso.Id)
             {

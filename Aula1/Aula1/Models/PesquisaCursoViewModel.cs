@@ -7,7 +7,7 @@ namespace Aula1.Models
     {
         public List<Curso> ListaDeCursos { get; set; }
         public int NumResultados { get; set; }
-        [Display(Name = "Texto", Prompt = "introduza o texto a pesquisar")]
+        [Display(Name = "Pesquisa de cursos", Prompt = "introduza o texto a pesquisar")]
         public string TextoAPesquisar { get; set; }
     }
 }
