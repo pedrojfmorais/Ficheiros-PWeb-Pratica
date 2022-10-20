@@ -1,4 +1,4 @@
-﻿namespace Aula1.Data
+﻿namespace Aula1.Models
 {
     public class Habilitacoes
     {

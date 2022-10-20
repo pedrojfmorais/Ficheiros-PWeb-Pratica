@@ -62,13 +62,6 @@ namespace Aula1.Controllers
             return View(curso);
         }
 
-        // GET: Cursos/Create
-        public IActionResult Create()
-        {
-            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
-            return View();
-        }
-
         [HttpPost]
         public async Task<IActionResult> Search([Bind("TextoAPesquisar")]
             PesquisaCursoViewModel pesquisaCurso)
@@ -77,11 +70,19 @@ namespace Aula1.Controllers
             pesquisaCurso.ListaDeCursos = await _context.Cursos.Where(
                 c => c.Nome.Contains(pesquisaCurso.TextoAPesquisar)
                 || c.Descricao.Contains(pesquisaCurso.TextoAPesquisar)
+                || c.Categoria.Nome.Contains(pesquisaCurso.TextoAPesquisar)
                 ).ToListAsync();
 
             pesquisaCurso.NumResultados = pesquisaCurso.ListaDeCursos.Count;
 
             return View(pesquisaCurso);
+        }
+
+        // GET: Cursos/Create
+        public IActionResult Create()
+        {
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
+            return View();
         }
 
         // POST: Cursos/Create
@@ -91,7 +92,10 @@ namespace Aula1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Disponivel,CategoriaId,Descricao,DescricaoResumida,Requisitos,IdadeMinima,Preco,EmDestaque")] Curso curso)
         {
-            curso.Categoria = _context.Categoria.Find(curso.CategoriaId);
+            //temporário
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
+
+            ModelState.Remove(nameof(curso.Categoria));
             if (ModelState.IsValid)
             {
                 _context.Add(curso);
@@ -126,11 +130,15 @@ namespace Aula1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Disponivel,CategoriaId,Descricao,DescricaoResumida,Requisitos,IdadeMinima,Preco,EmDestaque")] Curso curso)
         {
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
+
             if (id != curso.Id)
             {
                 return NotFound();
             }
 
+            //temporário
+            ModelState.Remove(nameof(curso.Categoria));
             if (ModelState.IsValid)
             {
                 try
