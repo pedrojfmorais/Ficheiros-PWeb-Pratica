@@ -1,4 +1,4 @@
-﻿namespace Aula1.Models
+﻿namespace Aula1.Models.NotUsed
 {
     public class Instrutores
     {
