@@ -75,6 +75,9 @@ namespace Aula1.Controllers
 
             pesquisaCurso.NumResultados = pesquisaCurso.ListaDeCursos.Count;
 
+
+            ViewData["Title"] = pesquisaCurso.NumResultados + " resultados encontrados";
+
             return View(pesquisaCurso);
         }
 
