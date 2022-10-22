@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
-namespace Aula1.Models
+namespace Aula1.Models.ViewModels
 {
     public class PesquisaCursoViewModel
     {

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Aula1.Data;
 using Aula1.Models;
+using Aula1.Models.ViewModels;
 
 namespace Aula1.Controllers
 {
@@ -95,9 +96,9 @@ namespace Aula1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Disponivel,CategoriaId,Descricao,DescricaoResumida,Requisitos,IdadeMinima,Preco,EmDestaque")] Curso curso)
         {
-            //temporário
             ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
 
+            //temporário
             ModelState.Remove(nameof(curso.Categoria));
             if (ModelState.IsValid)
             {
