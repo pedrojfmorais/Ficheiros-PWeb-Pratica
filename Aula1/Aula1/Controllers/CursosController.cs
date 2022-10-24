@@ -23,17 +23,18 @@ namespace Aula1.Controllers
         // GET: Cursos
         public async Task<IActionResult> Index(bool? disponivel)
         {
+
             if(disponivel != null)
             {
                 if (disponivel == true)
                     ViewData["Title"] = "Lista de cursos Activos";
                 else
                     ViewData["Title"] = "Lista de cursos Inativos";
-                return View(await _context.Cursos.Where(c => c.Disponivel == disponivel).ToListAsync());
+                return View(await _context.Cursos.Include("Categoria").Where(c => c.Disponivel == disponivel).ToListAsync());
             }
 
             ViewData["Title"] = "Lista de cursos";
-            return View(await _context.Cursos.ToListAsync());
+            return View(await _context.Cursos.Include("Categoria").ToListAsync());
         }
         /*
         [HttpPost]
@@ -53,7 +54,7 @@ namespace Aula1.Controllers
                 return NotFound();
             }
 
-            var curso = await _context.Cursos
+            var curso = await _context.Cursos.Include("Categoria")
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (curso == null)
             {
@@ -67,17 +68,23 @@ namespace Aula1.Controllers
         public async Task<IActionResult> Search([Bind("TextoAPesquisar")]
             PesquisaCursoViewModel pesquisaCurso)
         {
+            if (string.IsNullOrWhiteSpace(pesquisaCurso.TextoAPesquisar))
+            {
+                pesquisaCurso.ListaDeCursos = await _context.Cursos.Include("Categoria").ToListAsync();
+            }
+            else
+            {
 
-            pesquisaCurso.ListaDeCursos = await _context.Cursos.Where(
-                c => c.Nome.Contains(pesquisaCurso.TextoAPesquisar)
-                || c.Descricao.Contains(pesquisaCurso.TextoAPesquisar)
-                || c.Categoria.Nome.Contains(pesquisaCurso.TextoAPesquisar)
-                ).ToListAsync();
+                pesquisaCurso.ListaDeCursos = await _context.Cursos.Include("Categoria").Where(
+                    c => c.Nome.Contains(pesquisaCurso.TextoAPesquisar)
+                    || c.Descricao.Contains(pesquisaCurso.TextoAPesquisar)
+                    || c.Categoria.Nome.Contains(pesquisaCurso.TextoAPesquisar)
+                    ).ToListAsync();
 
+            }
             pesquisaCurso.NumResultados = pesquisaCurso.ListaDeCursos.Count;
 
-
-            ViewData["Title"] = pesquisaCurso.NumResultados + " resultados encontrados";
+            ViewData["Title"] = "Os nossos cursos";
 
             return View(pesquisaCurso);
         }
@@ -174,7 +181,7 @@ namespace Aula1.Controllers
                 return NotFound();
             }
 
-            var curso = await _context.Cursos
+            var curso = await _context.Cursos.Include("Categoria")
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (curso == null)
             {

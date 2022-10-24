@@ -8,6 +8,7 @@ namespace Aula1.Data
     {
         public DbSet<Curso> Cursos { get; set; }
         public DbSet<Categoria> Categoria { get; set; }
+        public DbSet<Agendamento> Agendamento { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

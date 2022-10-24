@@ -8,52 +8,71 @@
 <h1>
     @ViewData["Title"]
 </h1>
+   
+<div class="container bg-white">
+    @if(!(string.IsNullOrEmpty(Model.TextoAPesquisar))){
+        <p>Resultado da pesquisa por "@Model.TextoAPesquisar":</p>
 
-<form method="post">
-    <label asp-for="TextoAPesquisar"></label>
-    <input asp-for="TextoAPesquisar" />
-    <button type="submit">pesquisar</button>
-</form>
+        @if(Model.NumResultados == 0){
+            <p class="alert alert-warning">
+                Não foi possível encontrar cursos com os dados introduzidos. Por favor, reveja a sua
+                pesquisa
+            </p>
+        }
+    }else {
+            <p>Existe(m) @Model.NumResultados curso(s) disponiveis</p>
+    }
+    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+        @foreach (var item in Model.ListaDeCursos)
+        {
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        @if (string.IsNullOrWhiteSpace(Model.TextoAPesquisar))
+                        {
+                            <h4 class="my-0 fw-normal">
+                                @Html.DisplayFor(modelItem => item.Nome)
+                                (@Html.DisplayFor(modelItem => item.Categoria.Nome))
+                            </h4>
+                        }else{
+                            <h4 class="my-0 fw-normal">
+                                @Html.Raw(item.Nome.ToString().ToLower().Replace(
+                                    Model.TextoAPesquisar.ToLower(),
+                                "<span class=\"bg-warning\">"+Model.TextoAPesquisar+"</span>"))
+                                (@Html.DisplayFor(modelItem => item.Categoria.Nome)
+                            </h4>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title pricing-card-title">
 
-<p>
-    <a asp-action="Create">Adicionar Curso</a>
-</p>
-<a asp-action="Index">Todos</a>
-<a asp-action="Index" asp-route-disponivel="true">Activos</a>
-<a asp-action="Index" asp-route-disponivel="false">Inativos</a>
-<table class="table table-bordered table-striped table-hover">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ListaDeCursos.FirstOrDefault().Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ListaDeCursos.FirstOrDefault().Disponivel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ListaDeCursos.FirstOrDefault().Categoria.Nome)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.ListaDeCursos) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Disponivel)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Categoria.Nome)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Apagar</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                            @Html.DisplayFor(modelItem => item.Preco)
+                            <small class="text-muted fw-light"></small>
+                        </h1>
+                        <ul class="list-unstyled mt-3 mb-4">
+                            @if (string.IsNullOrWhiteSpace(Model.TextoAPesquisar))
+                            {
+                                <li class="my-0 fw-normal">
+                                    @Html.DisplayFor(modelItem => item.DescricaoResumida)
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="my-0 fw-normal">
+                                    @Html.Raw(item.DescricaoResumida.ToString().ToLower().Replace(
+                            Model.TextoAPesquisar.ToLower(),
+                            "<span class=\"bg-warning\">"+Model.TextoAPesquisar+"</span>"))
+                                </li>
+                            }
+                        </ul>
+                        <a class="w-100 btn btn-lg btn-outline-primary"
+                            asp-controller="Cursos" asp-action="Details" asp-route-id="@item.Id">
+                            Saber
+                            mais
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>    
+</div>

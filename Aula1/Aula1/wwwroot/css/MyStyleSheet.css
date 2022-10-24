@@ -1,0 +1,30 @@
+﻿#botaoPesquisa {
+    border: none;
+}
+
+    #botaoPesquisa:hover {
+        animation: ease flutuar 2s;
+        animation-iteration-count: infinite;
+    }
+
+@keyframes flutuar {
+    0% {
+        transform: translateY(-2px);
+    }
+
+    25% {
+        transform: translateY(2px);
+    }
+
+    50% {
+        transform: translateY(-2px);
+    }
+
+    75% {
+        transform: translateY(2px);
+    }
+
+    100% {
+        transform: translateY(-2px);
+    }
+}
