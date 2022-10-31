@@ -39,7 +39,7 @@
                                 @Html.Raw(item.Nome.ToString().ToLower().Replace(
                                     Model.TextoAPesquisar.ToLower(),
                                 "<span class=\"bg-warning\">"+Model.TextoAPesquisar+"</span>"))
-                                (@Html.DisplayFor(modelItem => item.Categoria.Nome)
+                                (@Html.DisplayFor(modelItem => item.Categoria.Nome))
                             </h4>
                         }
                     </div>

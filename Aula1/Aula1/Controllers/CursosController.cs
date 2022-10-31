@@ -23,8 +23,9 @@ namespace Aula1.Controllers
         // GET: Cursos
         public async Task<IActionResult> Index(bool? disponivel)
         {
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
 
-            if(disponivel != null)
+            if (disponivel != null)
             {
                 if (disponivel == true)
                     ViewData["Title"] = "Lista de cursos Activos";
@@ -66,11 +67,12 @@ namespace Aula1.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Search([Bind("TextoAPesquisar")]
-            PesquisaCursoViewModel pesquisaCurso)
+            PesquisaCursoViewModel pesquisaCurso, int CategoriaId)
         {
             if (string.IsNullOrWhiteSpace(pesquisaCurso.TextoAPesquisar))
             {
-                pesquisaCurso.ListaDeCursos = await _context.Cursos.Include("Categoria").ToListAsync();
+                pesquisaCurso.ListaDeCursos = await _context.Cursos.Include("Categoria").
+                    Where(c => c.CategoriaId == CategoriaId).ToListAsync();
             }
             else
             {
@@ -78,7 +80,7 @@ namespace Aula1.Controllers
                 pesquisaCurso.ListaDeCursos = await _context.Cursos.Include("Categoria").Where(
                     c => c.Nome.Contains(pesquisaCurso.TextoAPesquisar)
                     || c.Descricao.Contains(pesquisaCurso.TextoAPesquisar)
-                    || c.Categoria.Nome.Contains(pesquisaCurso.TextoAPesquisar)
+                    || c.CategoriaId == CategoriaId
                     ).ToListAsync();
 
             }
