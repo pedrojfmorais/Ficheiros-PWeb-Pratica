@@ -69,7 +69,7 @@ namespace Aula1.Areas.Identity.Pages.Account.Manage
             [Display(Name = "NIF")]
             public int NIF { get; set; }
 
-            [Display(Name = "Data de Nascimento")]
+            [Display(Name = "Data de Nascimento"), DataType(DataType.Date)]
             public DateTime DataNascimento { get; set; }
         }
 
@@ -127,6 +127,31 @@ namespace Aula1.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            if (user.PrimeiroNome != Input.PrimeiroNome)
+            {
+                user.PrimeiroNome = Input.PrimeiroNome;
+                await _userManager.UpdateAsync(user);
+            }
+
+
+            if(user.UltimoNome != Input.UltimoNome)
+            {
+                user.UltimoNome = Input.UltimoNome;
+                await _userManager.UpdateAsync(user);
+            }
+            
+            if(user.DataNascimento != Input.DataNascimento)
+            {
+                user.DataNascimento = Input.DataNascimento;
+                await _userManager.UpdateAsync(user);
+            }
+            
+            if(user.NIF != Input.NIF)
+            {
+                user.NIF = Input.NIF;
+                await _userManager.UpdateAsync(user);
+            }
+            
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();

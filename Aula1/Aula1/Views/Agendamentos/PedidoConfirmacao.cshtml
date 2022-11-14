@@ -15,17 +15,13 @@
             <input type="hidden" asp-for="DuracaoMinutos" />
             <input type="hidden" asp-for="Preco" />
             <input type="hidden" asp-for="TipoDeAulaId" />
-            <input type="hidden" asp-for="Cliente" />
+            @*<input type="hidden" asp-for="ApplicationUserId" />*@
             <input type="hidden" asp-for="DataInicio" />
             <input type="hidden" asp-for="DataFim" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label class="control-label">Tipo de Aula</label>
                 <input type="text" class="form-control form-control-lg" readonly disabled value="@Model.tipoDeAula.Nome" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Cliente" class="control-label"></label>
-                <input type="text" class="form-control form-control-lg" readonly disabled value="@Model.Cliente" />
             </div>
             <div class="form-group">
                 <label asp-for="DataInicio" class="control-label"></label>

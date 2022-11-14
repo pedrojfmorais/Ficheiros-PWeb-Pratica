@@ -11,5 +11,6 @@ namespace Aula1.Models
         [PersonalData]
         public int NIF { get; set; }
 
+        public ICollection<Agendamento> Agendamentos { get; set; }
     }
 }

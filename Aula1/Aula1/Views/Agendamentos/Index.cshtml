@@ -14,9 +14,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Cliente)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.DataInicio)
             </th>
             <th>
@@ -34,15 +31,21 @@
             <th>
                 @Html.DisplayNameFor(model => model.DataHoraDoPedido)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationUser.PrimeiroNome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationUser.UltimoNome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationUser.UserName)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cliente)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DataInicio)
             </td>
@@ -60,6 +63,15 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DataHoraDoPedido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApplicationUser.PrimeiroNome)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.ApplicationUser.UltimoNome)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

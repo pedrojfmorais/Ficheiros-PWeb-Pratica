@@ -34,10 +34,14 @@
                                     <a class="nav-link text-white" asp-area="" asp-controller="Categorias" asp-action="Index">CATEGORIAS</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-area="" asp-controller="Agendamentos" asp-action="Pedido">AGENDAMENTOS</a>
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Agendamentos" asp-action="Pedido">Pedidos</a>
                                 </li>
-
-
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white" asp-area="" asp-controller="Agendamentos" asp-action="Index">Meus Agendamentos</a>
+                                    </li>
+                                }
                             </ul>
                             <partial name="QuickSearchPartial" />
                             <partial name="_LoginPartial" />

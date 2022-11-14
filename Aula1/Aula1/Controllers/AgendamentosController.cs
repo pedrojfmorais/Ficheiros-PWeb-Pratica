@@ -8,16 +8,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Aula1.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace Aula1.Controllers
 {
     public class AgendamentosController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AgendamentosController(ApplicationDbContext context)
+        public AgendamentosController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Pedido()
@@ -27,7 +30,7 @@ namespace Aula1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Calcular([Bind("Cliente,DataInicio,DataFim,TipoDeAulaId")] AgendamentoViewModel pedido)
+        public async Task<IActionResult> Calcular([Bind("DataInicio,DataFim,TipoDeAulaId")] AgendamentoViewModel pedido)
         {
             ViewData["TipoDeAulaId"] = new SelectList(_context.TipoDeAula, "Id", "Nome");
 
@@ -49,7 +52,6 @@ namespace Aula1.Controllers
                 NrMinutos = (pedido.DataFim - pedido.DataInicio).TotalMinutes;
 
                 Agendamento x = new Agendamento();
-                x.Cliente = pedido.Cliente;
                 x.DataFim = pedido.DataFim;
                 x.DataInicio = pedido.DataInicio;
                 x.DuracaoMinutos = NrMinutos;
@@ -58,8 +60,7 @@ namespace Aula1.Controllers
 
                 x.Preco = tipoDeAula.ValorHora * (decimal)NrHoras;
                 x.tipoDeAula = tipoDeAula;
-
-
+                //x.ApplicationUserId = _userManager.GetUserId(User);
 
                 return View("PedidoConfirmacao", x);
 
@@ -71,7 +72,8 @@ namespace Aula1.Controllers
         // GET: Agendamentos
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Agendamentos.Include(a => a.tipoDeAula);
+            var applicationDbContext = _context.Agendamentos.Include(a => a.tipoDeAula).Include(u => u.ApplicationUser).
+                Where(c => c.ApplicationUserId == _userManager.GetUserId(User));
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -85,6 +87,7 @@ namespace Aula1.Controllers
 
             var agendamento = await _context.Agendamentos
                 .Include(a => a.tipoDeAula)
+                .Include(u => u.ApplicationUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (agendamento == null)
             {
@@ -106,10 +109,15 @@ namespace Aula1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Cliente,DataInicio,DataFim,DuracaoHoras,DuracaoMinutos,Preco,DataHoraDoPedido,TipoDeAulaId")] Agendamento agendamento)
+        public async Task<IActionResult> Create([Bind("Id,DataInicio,DataFim,DuracaoHoras,DuracaoMinutos,Preco,DataHoraDoPedido,TipoDeAulaId")] Agendamento agendamento)
         {
             ModelState.Remove(nameof(agendamento.tipoDeAula));
             agendamento.DataHoraDoPedido = DateTime.Now;
+
+            ModelState.Remove(nameof(agendamento.ApplicationUser));
+            ModelState.Remove(nameof(agendamento.ApplicationUserId));
+
+            agendamento.ApplicationUserId = _userManager.GetUserId(User);
 
             if (ModelState.IsValid)
             {

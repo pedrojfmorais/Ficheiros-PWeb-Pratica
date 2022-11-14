@@ -3,7 +3,6 @@
     public class Agendamento
     {
         public int Id { get; set; }
-        public string Cliente { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public double DuracaoHoras { get; set; }
@@ -13,5 +12,8 @@
 
         public int TipoDeAulaId { get; set; }
         public TipoDeAula tipoDeAula { get; set; }
+
+        public string ApplicationUserId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
     }
 }

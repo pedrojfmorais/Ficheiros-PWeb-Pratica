@@ -93,7 +93,7 @@ namespace Aula1.Areas.Identity.Pages.Account
             public int NIF { get; set; }
 
             [Required]
-            [Display(Name = "Data de Nascimento")]
+            [Display(Name = "Data de Nascimento"), DataType(DataType.Date)]
             public DateTime DataNascimento { get; set; }
 
             /// <summary>
