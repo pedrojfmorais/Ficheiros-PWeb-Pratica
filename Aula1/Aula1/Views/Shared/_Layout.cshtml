@@ -33,15 +33,26 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-white" asp-area="" asp-controller="Categorias" asp-action="Index">CATEGORIAS</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white" asp-area="" asp-controller="Agendamentos" asp-action="Pedido">Pedidos</a>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        AGENDAMENTOS
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Agendamentos" asp-action="Index">Todos os Agendamentos</a>
+                                        </li>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item" asp-area="" asp-controller="Agendamentos" asp-action="Pedido">Pedido de Agendamento</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-area="" asp-controller="Agendamentos" asp-action="MeusAgendamentos">Meus Agendamentos</a>
+                                            </li>
+                                        }
+                                    </ul>
                                 </li>
-                                @if (User.Identity.IsAuthenticated)
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-white" asp-area="" asp-controller="Agendamentos" asp-action="Index">Meus Agendamentos</a>
-                                    </li>
-                                }
                             </ul>
                             <partial name="QuickSearchPartial" />
                             <partial name="_LoginPartial" />

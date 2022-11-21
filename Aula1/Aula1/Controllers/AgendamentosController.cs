@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Aula1.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Aula1.Controllers
 {
@@ -23,6 +24,7 @@ namespace Aula1.Controllers
             _userManager = userManager;
         }
 
+        [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> Pedido()
         {
             ViewData["TipoDeAulaId"] = new SelectList(_context.TipoDeAula, "Id", "Nome");
@@ -30,6 +32,7 @@ namespace Aula1.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> Calcular([Bind("DataInicio,DataFim,TipoDeAulaId")] AgendamentoViewModel pedido)
         {
             ViewData["TipoDeAulaId"] = new SelectList(_context.TipoDeAula, "Id", "Nome");
@@ -70,10 +73,17 @@ namespace Aula1.Controllers
         }
 
         // GET: Agendamentos
+        [Authorize]
         public async Task<IActionResult> Index()
+        {
+            return View(await _context.Agendamentos.Include(a => a.tipoDeAula).Include(u => u.ApplicationUser).ToListAsync());
+        }
+        
+        public async Task<IActionResult> MeusAgendamentos()
         {
             var applicationDbContext = _context.Agendamentos.Include(a => a.tipoDeAula).Include(u => u.ApplicationUser).
                 Where(c => c.ApplicationUserId == _userManager.GetUserId(User));
+
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -98,6 +108,7 @@ namespace Aula1.Controllers
         }
 
         // GET: Agendamentos/Create
+        [Authorize(Roles = "Cliente")]
         public IActionResult Create()
         {
             ViewData["TipoDeAulaId"] = new SelectList(_context.TipoDeAula, "Id", "Id");
@@ -108,6 +119,7 @@ namespace Aula1.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Cliente")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,DataInicio,DataFim,DuracaoHoras,DuracaoMinutos,Preco,DataHoraDoPedido,TipoDeAulaId")] Agendamento agendamento)
         {
@@ -130,6 +142,7 @@ namespace Aula1.Controllers
         }
 
         // GET: Agendamentos/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Agendamentos == null)
@@ -150,6 +163,7 @@ namespace Aula1.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Cliente,DataInicio,DataFim,DuracaoHoras,DuracaoMinutos,Preco,DataHoraDoPedido,TipoDeAulaId")] Agendamento agendamento)
         {
@@ -183,6 +197,7 @@ namespace Aula1.Controllers
         }
 
         // GET: Agendamentos/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Agendamentos == null)
@@ -203,6 +218,7 @@ namespace Aula1.Controllers
 
         // POST: Agendamentos/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
