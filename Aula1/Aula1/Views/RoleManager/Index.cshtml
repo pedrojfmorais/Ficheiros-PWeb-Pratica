@@ -21,6 +21,7 @@
         <tr>
             <th>Role</th>
             <th>Id</th>
+            <th>Remove</th>
         </tr>
     </thead>
     <tbody>
@@ -32,6 +33,14 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    <a 
+                        class="btn btn-danger"
+                        asp-action="Remove" 
+                        asp-route-id="@item.Id"
+                        onclick="return confirm('Tem a certeza que deseja apagar?')"
+                    >Remove</a>
                 </td>
             </tr>
         }

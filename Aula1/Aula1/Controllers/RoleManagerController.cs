@@ -1,4 +1,6 @@
 ﻿using Aula1.Data;
+using Aula1.Models;
+using Aula1.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +24,21 @@ namespace Aula1.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRole(string roleName)
         {
-            /* código a criar */
+            IdentityRole newRole = new IdentityRole();
+            newRole.Name = roleName;
+
+            if (!String.IsNullOrEmpty(roleName))
+            {
+                await _roleManager.CreateAsync(newRole);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Remove(string? id)
+        {
+            await _roleManager.DeleteAsync(await _roleManager.FindByIdAsync(id));
+
             return RedirectToAction("Index");
         }
     }

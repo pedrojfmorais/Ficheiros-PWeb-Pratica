@@ -1,5 +1,32 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<Aula1.Models.ViewModels.ManageUserRolesViewModel>
+
 @{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+    ViewData["Title"] = "Manage User Roles";
 }
+
+
+<form method="post">
+    <div class="card">
+        <div class="card-header">
+            <h2>Manage User Roles</h2>
+            <span>Add/Remove Roles for User: @ViewData["UserName"]</span>
+        </div>
+        <div class="card-body">
+            @for (int i = 0; i < Model.Count(); i++)
+            {
+                <div class="form-check m-1">
+                    <input type="hidden" asp-for="@Model[i].RoleId" />
+                    <input type="hidden" asp-for="@Model[i].RoleName" />
+                    <input asp-for="@Model[i].Selected" class="form-check-input" />
+                    <label class="form-check-label" asp-for="@Model[i].Selected">@Model[i].RoleName</label>
+                </div>
+            }
+            <hr />
+            <div>
+                <a class="btn btn-primary" asp-action="Index">Update</a>
+                <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+            </div>  
+        </div>
+    </div>
+</form>
