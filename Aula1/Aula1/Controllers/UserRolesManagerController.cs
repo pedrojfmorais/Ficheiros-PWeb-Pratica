@@ -79,15 +79,18 @@ namespace Aula1.Controllers
         public async Task<IActionResult> Details(List<ManageUserRolesViewModel> model,
        string userId)
         {
-
             var user = await _userManager.FindByIdAsync(userId);
+            if(user == null)
+                return RedirectToAction("Index");
 
-            foreach(var role in model)
+            await _userManager.RemoveFromRolesAsync(user, await GetUserRoles(user));
+
+            foreach (var role in model)
             {
-
+                if (role.Selected == true)
+                    await _userManager.AddToRoleAsync(user, role.RoleName);
             }
 
-            /* código a criar */
             return RedirectToAction("Index");
         }
     }
