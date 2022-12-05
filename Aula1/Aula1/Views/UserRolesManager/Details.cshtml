@@ -13,21 +13,20 @@
             <span>Add/Remove Roles for User: @ViewData["UserName"]</span>
         </div>
         <div class="card-body">
-            @for (int i = 0; i < Model.Count(); i++)
+            @for (int i = 0; i < Model.Count; i++)
             {
                 <div class="form-check m-1">
                     <input type="hidden" asp-for="@Model[i].RoleId" />
-                    <input type="hidden" name="userId" value="@ViewBag.userId" />
                     <input type="hidden" asp-for="@Model[i].RoleName" />
                     <input asp-for="@Model[i].Selected" class="form-check-input" />
                     <label class="form-check-label" asp-for="@Model[i].Selected">@Model[i].RoleName</label>
                 </div>
             }
-            <hr />
-            <div>
-                <input class="btn btn-primary" type="submit" value="Update" />
-                <a class="btn btn-secondary" asp-action="Index">Cancel</a>
-            </div>  
+            <div asp-validation-summary="All" class="text-danger"></div>
         </div>
+        <div class="card-footer">
+            <input class="btn btn-primary" type="submit" style="width:auto" value="Update" />
+            <a class="btn btn-secondary" style="width:auto" asp-action="Index">Cancel</a>
+        </div>  
     </div>
 </form>
