@@ -164,6 +164,7 @@ namespace Aula1.Controllers
             {
                 try
                 {
+                    //TODO não dá
                     var path = Path.Combine(Directory.GetCurrentDirectory(), ("\\wwwroot\\img\\cursos\\" + curso.Id));
                     if (!Directory.Exists(path))
                         Directory.CreateDirectory(path);
