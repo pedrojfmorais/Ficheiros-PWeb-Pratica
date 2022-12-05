@@ -10,6 +10,7 @@ using Aula1.Models;
 using Aula1.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using System.IO;
 
 namespace Aula1.Controllers
 {
@@ -163,6 +164,10 @@ namespace Aula1.Controllers
             {
                 try
                 {
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), ("\\wwwroot\\img\\cursos\\" + curso.Id));
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+
                     _context.Update(curso);
                     await _context.SaveChangesAsync();
                 }

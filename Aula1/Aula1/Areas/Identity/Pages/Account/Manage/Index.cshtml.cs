@@ -25,7 +25,6 @@ namespace Aula1.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -56,6 +55,12 @@ namespace Aula1.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            /// 
+
+            [Display(Name = "O meu Avatar")]
+            public byte[]? Avatar { get; set; }
+            public IFormFile AvatarFile { get; set; }
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -83,10 +88,11 @@ namespace Aula1.Areas.Identity.Pages.Account.Manage
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber,
+                DataNascimento = user.DataNascimento,
                 PrimeiroNome = user.PrimeiroNome,
                 UltimoNome = user.UltimoNome,
                 NIF = user.NIF,
-                DataNascimento = user.DataNascimento
+                Avatar = user.Avatar,
             };
         }
 
@@ -102,6 +108,19 @@ namespace Aula1.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
+        //verifica se a extensão é .png,.jpg,.jpeg
+        public bool isValidFileType(string filename)
+        {
+            List<string> fileExtensions = new List<string>() { "png", "jpg", "jpeg" };
+            List<string> filenameSeparated = filename.Split('.').Reverse().ToList<string>();
+            
+            foreach (var extension in fileExtensions)
+                if (extension.Equals(filenameSeparated[0]))
+                    return true;
+
+            return false;
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -114,6 +133,27 @@ namespace Aula1.Areas.Identity.Pages.Account.Manage
             {
                 await LoadAsync(user);
                 return Page();
+            }
+
+            if (Input.AvatarFile != null)
+            {
+                if (Input.AvatarFile.Length > (200 * 1024))
+                {
+                    StatusMessage = "Error: Ficheiro demasiado grande";
+                    return RedirectToPage();
+                }
+                // método a implementar – verifica se a extensão é .png,.jpg,.jpeg
+                if (!isValidFileType(Input.AvatarFile.FileName))
+                {
+                    StatusMessage = "Error: Ficheiro não suportado";
+                    return RedirectToPage();
+                }
+                using (var dataStream = new MemoryStream())
+                {
+                    await Input.AvatarFile.CopyToAsync(dataStream);
+                    user.Avatar = dataStream.ToArray();
+                }
+                await _userManager.UpdateAsync(user);
             }
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);

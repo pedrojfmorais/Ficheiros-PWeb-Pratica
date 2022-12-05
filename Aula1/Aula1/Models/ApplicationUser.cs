@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Aula1.Models
 {
     public class ApplicationUser : IdentityUser
     {
+        [Display(Name = "O meu Avatar")]
+        public byte[]? Avatar { get; set; }
         public string PrimeiroNome { get; set; }
         public string UltimoNome { get; set; }
         [PersonalData]

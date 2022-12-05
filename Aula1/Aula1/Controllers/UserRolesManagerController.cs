@@ -25,6 +25,7 @@ namespace Aula1.Controllers
             foreach (var user in users){
                 UserRolesViewModel userRolesViewModel = new UserRolesViewModel();
 
+                userRolesViewModel.Avatar = user.Avatar;
                 userRolesViewModel.UserId = user.Id;
                 userRolesViewModel.UserName = user.UserName;
                 userRolesViewModel.PrimeiroNome = user.PrimeiroNome;
@@ -57,6 +58,7 @@ namespace Aula1.Controllers
 
             ViewBag.userId = userId;
             ViewData["UserName"] = user.UserName;
+            ViewBag.Avatar = user.Avatar;
 
             List<ManageUserRolesViewModel> roles = new List<ManageUserRolesViewModel>();
             var userRoles = await _userManager.GetRolesAsync(await _userManager.Users.Where(u => u.Id == userId).FirstAsync());
