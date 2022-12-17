@@ -140,6 +140,23 @@ namespace Aula1.Controllers
             {
                 return NotFound();
             }
+
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
+
+            var coursePath = Path.Combine(Directory.GetCurrentDirectory(), ("wwwroot/img/cursos/" + id.ToString()));
+            if (!Directory.Exists(coursePath))
+                Directory.CreateDirectory(coursePath);
+            //LINK SYNTAX
+            var files = from file in
+                            Directory.EnumerateFiles(coursePath)
+                        select string.Format(
+                            "/img/cursos//{0}/{1}",
+                            id,
+                            Path.GetFileName(file));
+
+            ViewData["Ficheiros"] = files; //lista de strings para a vista
+            //ViewBag.Ficheiros = files;
+
             return View(curso);
         }
 
@@ -149,7 +166,8 @@ namespace Aula1.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Disponivel,CategoriaId,Descricao,DescricaoResumida,Requisitos,IdadeMinima,Preco,EmDestaque")] Curso curso)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Disponivel,CategoriaId,Descricao,DescricaoResumida,Requisitos,IdadeMinima,Preco,EmDestaque")] Curso curso,
+            [FromForm] List<IFormFile> ficheiros)
         {
             ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
 
@@ -164,13 +182,34 @@ namespace Aula1.Controllers
             {
                 try
                 {
-                    //TODO não dá
-                    var path = Path.Combine(Directory.GetCurrentDirectory(), ("\\wwwroot\\img\\cursos\\" + curso.Id));
-                    if (!Directory.Exists(path))
-                        Directory.CreateDirectory(path);
 
                     _context.Update(curso);
                     await _context.SaveChangesAsync();
+
+                    string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/cursos/");
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+
+                    // Dir relativo aos ficheiros do curso
+                    path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/cursos/" + id.ToString());
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+
+                    foreach (var formFile in ficheiros)
+                    {
+                        if (formFile.Length > 0)
+                        {
+                            var filePath = Path.Combine(path, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
+                            while (System.IO.File.Exists(filePath))
+                            {
+                                filePath = Path.Combine(path, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
+                            }
+                            using (var stream = System.IO.File.Create(filePath))
+                            {
+                                await formFile.CopyToAsync(stream);
+                            }
+                        }
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -186,6 +225,20 @@ namespace Aula1.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(curso);
+        }
+
+        public async Task<IActionResult> deleteImage(int id, string image)
+        {
+            if (id == null || _context.Cursos == null)
+                return NotFound();
+            var curso = await _context.Cursos.FirstOrDefaultAsync(m => m.Id == id);
+            if (curso == null)
+                return NotFound();
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), ("wwwroot/" + image));
+
+            System.IO.File.Delete(filePath);
+            return RedirectToAction("Edit", new { Id = id });
         }
 
         // GET: Cursos/Delete/5

@@ -4,7 +4,7 @@
 
 namespace Aula1.Migrations
 {
-    public partial class quatro : Migration
+    public partial class um : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

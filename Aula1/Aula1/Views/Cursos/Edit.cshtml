@@ -11,7 +11,35 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <p>Adicionar imagens</p>
+                <div class="form-group">
+                    <input type="file" name="ficheiros" id="ficheiros"
+                           multiple
+                           accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+                           class="form-control" />
+                </div>
+                <p>Galeria de imagens</p>
+                <div class="row d-flex">
+                    @foreach (var file in ViewBag.Ficheiros)
+                    {
+                        <div class="col p-2 m-2" style="border-radius:10px;">
+                            <a asp-action="deleteImage"
+                           asp-route-id="@Model.Id"
+                           asp-route-image="@file">
+                                <svg bootstrap-icon="XCircleFill" onclick="return confirm('Tem a certeza?')"
+                                 class="text-danger" width="24" aria-label="Thrash"></svg>
+                            </a>
+                            <img src="@file"
+                             class="img-thumbnail"
+                             style="max-width:150px; max-height:150px" />
+                        </div>
+                    }
+
+                </div>
+            </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -74,5 +102,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

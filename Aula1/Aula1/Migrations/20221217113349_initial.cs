@@ -28,6 +28,11 @@ namespace Aula1.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Avatar = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    PrimeiroNome = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UltimoNome = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DataNascimento = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NIF = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -61,6 +66,20 @@ namespace Aula1.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categoria", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TipoDeAula",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ValorHora = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TipoDeAula", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -177,7 +196,6 @@ namespace Aula1.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Disponivel = table.Column<bool>(type: "bit", nullable: false),
-                    Categoria = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DescricaoResumida = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Requisitos = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -196,6 +214,48 @@ namespace Aula1.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Agendamentos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DataInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataFim = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DuracaoHoras = table.Column<double>(type: "float", nullable: false),
+                    DuracaoMinutos = table.Column<double>(type: "float", nullable: false),
+                    Preco = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DataHoraDoPedido = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TipoDeAulaId = table.Column<int>(type: "int", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Agendamentos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Agendamentos_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Agendamentos_TipoDeAula_TipoDeAulaId",
+                        column: x => x.TipoDeAulaId,
+                        principalTable: "TipoDeAula",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Agendamentos_ApplicationUserId",
+                table: "Agendamentos",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Agendamentos_TipoDeAulaId",
+                table: "Agendamentos",
+                column: "TipoDeAulaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -245,6 +305,9 @@ namespace Aula1.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Agendamentos");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -261,6 +324,9 @@ namespace Aula1.Migrations
 
             migrationBuilder.DropTable(
                 name: "Cursos");
+
+            migrationBuilder.DropTable(
+                name: "TipoDeAula");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

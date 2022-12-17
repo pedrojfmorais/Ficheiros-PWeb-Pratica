@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aula1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221107162234_PersonalizacaoIdentityUser")]
-    partial class PersonalizacaoIdentityUser
+    [Migration("20221217115739_um")]
+    partial class um
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,9 +32,9 @@ namespace Aula1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Cliente")
+                    b.Property<string>("ApplicationUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DataFim")
                         .HasColumnType("datetime2");
@@ -59,6 +59,8 @@ namespace Aula1.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.HasIndex("TipoDeAulaId");
 
                     b.ToTable("Agendamentos");
@@ -71,6 +73,9 @@ namespace Aula1.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<byte[]>("Avatar")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -372,11 +377,19 @@ namespace Aula1.Migrations
 
             modelBuilder.Entity("Aula1.Models.Agendamento", b =>
                 {
+                    b.HasOne("Aula1.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("Agendamentos")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Aula1.Models.TipoDeAula", "tipoDeAula")
                         .WithMany()
                         .HasForeignKey("TipoDeAulaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ApplicationUser");
 
                     b.Navigation("tipoDeAula");
                 });
@@ -441,6 +454,11 @@ namespace Aula1.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Aula1.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Agendamentos");
                 });
 
             modelBuilder.Entity("Aula1.Models.Categoria", b =>
