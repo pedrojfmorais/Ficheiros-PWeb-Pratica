@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_layout2.cshtml";
+}
+<h1>Vendas mensais por curso</h1>
+<h6>Gráfico com Chart.js</h6>
+<div>
+    <canvas id="chartGraficoVendas"></canvas>
+</div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $.ajax({
+            type: "POST",
+            url: "/Cursos/GetDadosVendas",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                let Labels = data[0];
+                let Datasets1 = data[1];
+                let dataT = {
+                    labels: Labels,
+                    datasets: [{
+                        label: "Cursos",
+                        data: Datasets1,
+                        fill: false,
+                        borderWidth: 1,
+                        backgroundColor: ["red", "green", "blue", "cyan", "yellow"]
+                    }]
+                };
+                let ctx = $("#chartGraficoVendas").get(0).getContext("2d");
+                let myNewChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: dataT,
+                    options: {
+                        responsive: true,
+                        title: { display: true, text: 'Vendas de cursos ' },
+                        legend: { position: 'bottom' },
+
+                    }
+                });
+            }
+        });
+    </script>
+ }

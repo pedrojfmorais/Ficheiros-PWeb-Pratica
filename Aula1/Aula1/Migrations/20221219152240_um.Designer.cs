@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aula1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221217115739_um")]
+    [Migration("20221219152240_um")]
     partial class um
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

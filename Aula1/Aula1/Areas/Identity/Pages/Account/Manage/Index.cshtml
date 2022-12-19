@@ -12,6 +12,17 @@
         <form id="profile-form" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-floating">
+                <label for="pageBgColor">Cor de fundo da página</label>
+                <select name="pageBgColor" id="pageBgColor"
+                        onchange="setCookie('PWEB_BgColor',this.value,1)"
+                        class="form-control form-select form-select-sm">
+                    <option value="white">White</option>
+                    <option value="red">Red</option>
+                    <option value="orange">Orange</option>
+                    <option value="blue">Blue</option>
+                </select>
+            </div>
+            <div class="form-floating">
                 <div>
                     @if (Model.Input.Avatar == null)
                     {
@@ -67,4 +78,40 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        checkCookie();
+        function setCookie(cname, cvalue, exdays) {
+            console.log(cvalue);
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            let expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            document.body.style.setProperty("background-color", cvalue, "important");
+        }
+        function getCookie(cname) {
+            let name = cname + "=";
+            let ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        function checkCookie() {
+            let bgColor = getCookie("PWEB_BgColor");
+            let select = document.getElementById('pageBgColor');
+            if (bgColor != "") {
+                document.body.style.setProperty("background-color", bgColor,
+                    "important");
+                select.value = bgColor;
+            } else {
+                alert("Please choose a Background color:");
+            }
+        }
+    </script>
 }

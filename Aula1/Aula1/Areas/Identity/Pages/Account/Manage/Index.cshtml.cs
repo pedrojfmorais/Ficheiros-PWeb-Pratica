@@ -98,6 +98,17 @@ namespace Aula1.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
+            var cookieOptions = new CookieOptions();
+            cookieOptions.Expires = DateTime.Now.AddDays(10);
+            cookieOptions.Path = "/";
+            var cookie = Request.Cookies["PWEB_BgColor"];
+            if (cookie == null)
+                cookie = "yellow";
+            // adiciona / modifica o cookie com o nome PWEB_BgColor
+            Response.Cookies.Append("PWEB_BgColor", cookie, cookieOptions);
+            // elimina o cookie com o nome PWEB_BgColor
+            // Response.Cookies.Delete("PWEB_BgColor");
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {

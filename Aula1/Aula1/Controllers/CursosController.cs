@@ -11,6 +11,7 @@ using Aula1.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using System.IO;
+using Aula1.Models.Helpers;
 
 namespace Aula1.Controllers
 {
@@ -92,6 +93,126 @@ namespace Aula1.Controllers
             ViewData["Title"] = "Os nossos cursos";
 
             return View(pesquisaCurso);
+        }
+
+        // GET: Cursos/Create
+        public IActionResult Comprar(int? id)
+        {
+
+            var curso = _context.Cursos.Where(u => u.Id == id).FirstOrDefault();
+
+            if (curso == null)
+                return RedirectToAction(nameof(Index));
+
+            var CarrinhoDeCompras = HttpContext.Session.GetJson<Carrinho>("CarrinhoDeCompras") ?? new Carrinho();
+
+            CarrinhoDeCompras.AddItem(new CarrinhoItem { CursoId = curso.Id, CursoNome = curso.Nome,
+                Quantidade = 1, PrecoUnit = (decimal)curso.Preco}, 1);
+
+            HttpContext.Session.SetJson("CarrinhoDeCompras", CarrinhoDeCompras);
+
+            return RedirectToAction("Carrinho");
+        }
+
+        [HttpPost]
+        public IActionResult AlterarQuantidade(int? id, int quantidade)
+        {
+
+            if (id == null)
+                return RedirectToAction(nameof(Index));
+
+            var CarrinhoDeCompras = HttpContext.Session.GetJson<Carrinho>("CarrinhoDeCompras") ?? new Carrinho();
+
+            var carrinhoItem = CarrinhoDeCompras.items.Where(i => i.CursoId == id).First();
+
+            CarrinhoDeCompras.AddItem(carrinhoItem, quantidade);
+
+            HttpContext.Session.SetJson("CarrinhoDeCompras", CarrinhoDeCompras);
+
+            return RedirectToAction("Carrinho");
+        }
+        
+        [HttpPost]
+        public IActionResult RemoverItem(int? id)
+        {
+
+            if (id == null)
+                return RedirectToAction(nameof(Index));
+
+            var CarrinhoDeCompras = HttpContext.Session.GetJson<Carrinho>("CarrinhoDeCompras") ?? new Carrinho();
+
+            var carrinhoItem = CarrinhoDeCompras.items.Where(i => i.CursoId == id).First();
+
+            CarrinhoDeCompras.RemoveItem(carrinhoItem);
+            
+            HttpContext.Session.SetJson("CarrinhoDeCompras", CarrinhoDeCompras);
+
+            return RedirectToAction("Carrinho");
+        }
+        
+        public IActionResult LimparCarrinho()
+        {
+
+            var CarrinhoDeCompras = HttpContext.Session.GetJson<Carrinho>("CarrinhoDeCompras") ?? new Carrinho();
+
+            CarrinhoDeCompras.Clear();
+            
+            HttpContext.Session.SetJson("CarrinhoDeCompras", CarrinhoDeCompras);
+
+            return RedirectToAction("Carrinho");
+        }
+
+
+        public IActionResult Carrinho()
+        {
+            var CarrinhoDeCompras = HttpContext.Session.GetJson<Carrinho>("CarrinhoDeCompras") ?? new Carrinho();
+            return View(CarrinhoDeCompras);
+        }
+
+        // GET: Cursos/GraficoVendas/5
+        public async Task<IActionResult> GraficoVendas()
+        {
+            return View();
+        }
+        [HttpPost]
+        // POST: Cursos/GraficoVendas/5
+        public async Task<IActionResult> GetDadosVendas()
+        {
+            //dados de exemplo
+            List<object> dados = new List<object>();
+
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Cursos", System.Type.GetType("System.String"));
+            dt.Columns.Add("Quantidade", System.Type.GetType("System.Int32"));
+            DataRow dr = dt.NewRow();
+            dr["Cursos"] = "CATEGORIA AM (Ciclomotor)";
+            dr["Quantidade"] = 12;
+            dt.Rows.Add(dr);
+            dr = dt.NewRow();
+            dr["Cursos"] = "CATEGORIA A1 (Motociclo - 11kw/125cc)";
+            dr["Quantidade"] = 96;
+            dt.Rows.Add(dr);
+            dr = dt.NewRow();
+            dr["Cursos"] = "CATEGORIA A2 (Motociclo - 35kw)";
+            dr["Quantidade"] = 87;
+            dt.Rows.Add(dr);
+            dr = dt.NewRow();
+            dr["Cursos"] = "CATEGORIA B1 (Quadriciclo)";
+            dr["Quantidade"] = 67;
+            dt.Rows.Add(dr);
+            dr = dt.NewRow();
+            dr["Cursos"] = "CATEGORIA B (Ligeiro Caixa Automática)";
+            dr["Quantidade"] = 63;
+            dt.Rows.Add(dr);
+
+            foreach (DataColumn dc in dt.Columns)
+            {
+                List<object> x = new List<object>();
+                x = (from DataRow drr in dt.Rows select drr[dc.ColumnName]).ToList();
+                dados.Add(x);
+            }
+            return Json(dados);
+
         }
 
         // GET: Cursos/Create

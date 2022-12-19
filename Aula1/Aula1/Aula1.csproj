@@ -21,8 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations\" />
-    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\img\cursos\" />
   </ItemGroup>
 

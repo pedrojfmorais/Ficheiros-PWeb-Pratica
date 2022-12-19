@@ -65,10 +65,14 @@
                                 </li>
                             }
                         </ul>
-                        <a class="w-100 btn btn-lg btn-outline-primary"
+                        <a class="btn btn-lg btn-outline-primary"
                             asp-controller="Cursos" asp-action="Details" asp-route-id="@item.Id">
                             Saber
                             mais
+                        </a>
+                        <a class="btn btn-lg btn-success"
+                            asp-controller="Cursos" asp-action="Comprar" asp-route-id="@item.Id">
+                            Comprar
                         </a>
                     </div>
                 </div>

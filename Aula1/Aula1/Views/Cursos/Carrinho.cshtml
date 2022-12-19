@@ -1,0 +1,64 @@
+﻿@model Carrinho
+
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<h1>Carrinho de compras</h1>
+Items no carrinho: <span class="badge bg-secondary">@Model.items.Count</span>
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Preço Unitário</th>
+            <th>Quantidade</th>
+            <th>Sub-total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.items)
+        {
+            <tr>
+                <td>
+                    @item.CursoNome
+                </td>
+                <td>
+                    @item.PrecoUnit
+                </td>
+                <td>
+                    <form asp-action="AlterarQuantidade">
+                        <input name="quantidade" value="@item.Quantidade" />
+                        <input type="hidden" name="id" value="@item.CursoId"/>
+                        <input type="submit" value="Alterar" class="btn btn-success" />
+                    </form>
+                </td>
+                <td>
+                    @( item.Quantidade * item.PrecoUnit)
+                </td>
+                <td>
+                    <form asp-action="RemoverItem">
+                        <input type="hidden" name="id" value="@item.CursoId" />
+                        <input type="submit" value="Remover" class="btn btn-danger" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+    </tfoot>
+</table>
+<div class="row">
+    <div class="col-12 text-end ">
+        @{
+            decimal soma = 0;
+            foreach(var item in Model.items)
+            {
+                soma += (item.Quantidade * item.PrecoUnit);
+            }
+            <span class="badge bg-secondary">Total: @soma</span>
+        }
+        <a href="#" class="btn btn-primary">continuar a comprar</a>
+        <a href="#" class="btn btn-success">checkout</a>
+        <a asp-action="LimparCarrinho" class="btn btn-danger">Limpar Carrinho</a>
+    </div>
+</div>
